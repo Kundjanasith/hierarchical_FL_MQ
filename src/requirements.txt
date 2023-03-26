@@ -1,0 +1,4 @@
+celery==5.2.7
+h5py==3.8.0
+numpy==1.23.3
+tensorflow==2.11.0

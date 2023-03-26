@@ -1,0 +1,6 @@
+__pycache__/
+venv/
+*.py[cod]
+.Python
+aggregator_storage/
+trainer_storage/

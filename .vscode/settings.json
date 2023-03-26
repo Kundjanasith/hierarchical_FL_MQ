@@ -1,0 +1,14 @@
+{
+    "python.linting.lintOnSave": true,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.provider": "none",
+    "python.analysis.typeCheckingMode": "off",
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+      },
+      "editor.formatOnType": true
+    },
+}
