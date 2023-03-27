@@ -60,8 +60,8 @@ class Exchanger:
             model.save_weights("exchanger_storage/exchanger_models/model_ep0.h5")
         else:
             for queue_name in list_global_models.keys():
-                print('xxx',queue_name,type(list_local_models[queue_name]))
-                model_weights = json.loads(list_local_models[queue_name])
+                print('xxx',queue_name,type(list_global_models[queue_name]))
+                model_weights = json.loads(list_global_models[queue_name])
                 model_weights = np.asarray(model_weights, dtype=object)
                 model = utils.load_weights(model, model_weights)
                 model.save_weights(

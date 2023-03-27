@@ -57,7 +57,7 @@ class Trainer:
         model_weights = np.asarray(model_weights, dtype=object)
         model = utils.load_weights(model, model_weights)
         model.save_weights(
-            f"trainer_storage/aggregator_models/model_ep{global_epoch}.h5"
+            f"trainer_storage/aggregator_models/{queue_name}_ep{global_epoch}.h5"
         )
         x_train, y_train = sampling_data(self.num_samples)
         model.compile(

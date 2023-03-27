@@ -52,12 +52,12 @@ def aggregation(model_path):
 
 
 class Aggregator:
-    def aggregate(self, list_local_models: dict, global_epoch: int):
+    def aggregate(self, list_local_models: dict, global_epoch: int, aggregator_id: int):
         print('----->',global_epoch)
         model = utils.model_init()
         if global_epoch == 0:
             print("Loading initial model paramters . . .")
-            model.save_weights("aggregator_storage/aggregator_models/model_ep0.h5")
+            model.save_weights(f"aggregator_storage/aggregator_models/aggregator{aggregator_id}_ep0.h5")
         else:
             for queue_name in list_local_models.keys():
                 print('xxx',queue_name,type(list_local_models[queue_name]))
@@ -67,15 +67,17 @@ class Aggregator:
                 model.save_weights(
                     f"aggregator_storage/trainer_models/{queue_name}_ep{global_epoch-1}.h5"
                 )
-
-            model_path = [f"aggregator_storage/aggregator_models/model_ep{global_epoch-1}.h5"]
-            for p in glob.glob(f"aggregator_storage/trainer_models/*_ep{global_epoch-1}.h5"):
+            if global_epoch == 1:
+                model_path = [f"aggregator_storage/exchanger_models/model_ep{global_epoch-1}.h5"]
+            else:
+                model_path = [f"aggregator_storage/aggregator_models/aggregator{aggregator_id}_ep{global_epoch-1}.h5"]
+            for p in glob.glob(f"aggregator_storage/trainer_models/aggregator{aggregator_id}trainer*_ep{global_epoch-1}.h5"):
                 model_path.append(p)
             aggregated_model = aggregation(model_path)
             model.save_weights(
-                f"aggregator_storage/aggregator_models/model_ep{global_epoch}.h5"
+                f"aggregator_storage/aggregator_models/aggregator{aggregator_id}_ep{global_epoch}.h5"
             )
-        model.load_weights(f"aggregator_storage/aggregator_models/model_ep{global_epoch}.h5")
+        model.load_weights(f"aggregator_storage/aggregator_models/aggregator{aggregator_id}_ep{global_epoch}.h5")
         model_weights = model.get_weights()
         model_weights = json.dumps(model_weights, cls=utils.NumpyArrayEncoder)
         return model_weights
