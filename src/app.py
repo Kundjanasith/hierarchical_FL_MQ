@@ -1,19 +1,21 @@
 import configparser
-
+import json
 from celery import Celery
 
 config = configparser.ConfigParser()
 config.read("../config.ini")
 
 PYAMQP_IP = config["DISTRIBUTION"]["PYAMQP_IP"]
-NUM_TRAINERS = int(config["DISTRIBUTION"]["NUM_TRAINERS"])
+NUM_TRAINERS = json.loads(config["DISTRIBUTION"]["NUM_TRAINERS"])
+NUM_AGGREGATORS = int(config["DISTRIBUTION"]["NUM_AGGREGATORS"])
 
 def task_routes_init() -> dict:
     result = {}
-    result["learning.tasks.celery_aggregate"] = {"queue": "aggregator"}
-    trainers_bound = NUM_TRAINERS + 1
-    for idx in range(1, trainers_bound):
-        result["learning.tasks.celery_train"] = {"queue": f"trainer{idx}"}
+    aggregators_bound = NUM_AGGREGATORS + 1
+    for idx in range(1,aggregators_bound):
+        result["learning.tasks.celery_aggregate"] = {"queue": f"aggregator{idx}"}
+        for t in range(1,NUM_TRAINERS[idx-1]+1):
+            result["learning.tasks.celery_train"] = {"queue": f"aggregator{idx}trainer{t}"}
     return result
 
 
